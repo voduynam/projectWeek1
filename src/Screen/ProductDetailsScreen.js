@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { BackHandler, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, BackHandler, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Header from '../component/Header';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -22,12 +22,19 @@ const ProductDetailsScreen = () => {
   const item= route.params.item;
   // console.log(route.params.item);
     const navigation=useNavigation();
-    const [selectedSize, setSelectedSize] = useState(null);
-    const [selectedColor, setSelectedColor] = useState(null);
+    const [selectedSize, setSelectedSize] = useState("S");
+    const [selectedColor, setSelectedColor] = useState("#91A1B0");   
 
     const {addToCart}=useContext(CartContext)
 
     const handleAddToCart =(item)=>{
+        if(!selectedColor || !selectedSize){
+            Alert.alert("please choose your color and size");
+            return;           
+        }
+        
+        
+
         item.size=selectedSize;
         item.color=selectedColor;
         addToCart(item);
@@ -94,7 +101,7 @@ const ProductDetailsScreen = () => {
                 ))}
             </View>
             <View>
-              {/* button container */}
+              
             <TouchableOpacity style={styles.buttonContainer} 
                 onPress={()=>{
                     handleAddToCart(item);

@@ -1,15 +1,31 @@
-import React from 'react';
+
+
+import React, { useContext, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
+import { CartContext } from '../context/CartContext'; 
 
+const CartCart = ({ item }) => {
+    const {  deleteItemFromCart  } = useContext(CartContext);
+    const [quantity, setQuantity] = useState(1); 
+    const increaseQuantity = () => {
+        setQuantity(quantity+1)
+        
+    };
 
-const CartCart = ({ item, deleteItemFromCart }) => {
+    const decreaseQuantity = () => {
+        if(quantity>1){
+            setQuantity(quantity-1)
+        }
+    };
+
     return (
         <View style={styles.container}>
-            <Image source={{ uri: item.image}} style={styles.coverImage} />
+            <Image source={{ uri: item.image }} style={styles.coverImage} />
             <View style={styles.cartContent}>
                 <Text style={styles.title}>{item.title} </Text>
-                <Text style={styles.price}>${item.price} </Text>
+                <Text style={styles.price}>${item.price * quantity} </Text>
                 <View style={styles.circleSizeContainer}>
                     <View style={[styles.circle, { backgroundColor: item.color }]} />
                     <View style={styles.circleSize}>
@@ -17,9 +33,18 @@ const CartCart = ({ item, deleteItemFromCart }) => {
                     </View>
                 </View>
             </View>
-            <TouchableOpacity onPress={() => deleteItemFromCart(item)}>
-                <AntDesign name={"delete"} color={"black"} size={20} style={styles.iconDeleteContainer} />
-            </TouchableOpacity>
+            <View style={styles.DeleteContainer}>
+                <TouchableOpacity onPress={decreaseQuantity} style={styles.iconButton}>
+                    <Entypo name={'chevron-down'} size={23} color={'black'} />
+                </TouchableOpacity>
+                <Text style={styles.quantityText}>{quantity}</Text>
+                <TouchableOpacity onPress={increaseQuantity} style={styles.iconButton}>
+                    <Entypo name={'chevron-up'} size={23} color={'black'} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => deleteItemFromCart(item)} style={styles.iconButton}>
+                    <AntDesign name={'delete'} color={'black'} size={20} />
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
@@ -27,13 +52,14 @@ const CartCart = ({ item, deleteItemFromCart }) => {
 const styles = StyleSheet.create({
     container: {
         marginVertical: 10,
-        flexDirection: "row",
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     coverImage: {
         height: 125,
-        width: "25%",
+        width: '25%',
         borderRadius: 15,
-        resizeMode: "contain",
+        resizeMode: 'contain',
     },
     cartContent: {
         flex: 1,
@@ -41,11 +67,11 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 18,
-        color: "#444444",
-        fontWeight: "500",
+        color: '#444444',
+        fontWeight: '500',
     },
     price: {
-        color: "#797979",
+        color: '#797979',
         marginVertical: 10,
         fontSize: 18,
     },
@@ -55,23 +81,31 @@ const styles = StyleSheet.create({
         borderRadius: 16,
     },
     circleSizeContainer: {
-        flexDirection: "row",
+        flexDirection: 'row',
     },
     circleSize: {
-        backgroundColor: "white",
+        backgroundColor: 'white',
         height: 32,
         width: 32,
         borderRadius: 16,
-        justifyContent: "center",
-        alignItems: "center",
+        justifyContent: 'center',
+        alignItems: 'center',
         marginLeft: 20,
     },
     textSize: {
         fontSize: 18,
-        fontWeight: "500",
+        fontWeight: '500',
     },
-    iconDeleteContainer: {
-        alignSelf: "center",
+    DeleteContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    iconButton: {
+        padding: 5,
+    },
+    quantityText: {
+        fontSize: 18,
+        marginHorizontal: 10,
     },
 });
 

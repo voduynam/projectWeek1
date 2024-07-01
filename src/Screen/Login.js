@@ -1,11 +1,68 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import userData from '../data/User.json';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Axios from 'axios';
 
-const Login = ({ navigation }) => {
+const Login = ({ onLogin }) => {
   const [isSelected, setSelection] = useState(false);
- 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await Axios.get('https://667f7e38f2cb59c38dc90858.mockapi.io/api/user');
+        setUsers(response.data); 
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+    
+
+    const loadCredentials = async () => {
+      try {
+        const savedEmail = await AsyncStorage.getItem('savedEmail');
+        const savedPassword = await AsyncStorage.getItem('savedPassword');
+
+        if (savedEmail && savedPassword) {
+          setEmail(savedEmail);
+          setPassword(savedPassword);
+          setSelection(true);
+        }
+      } catch (error) {
+        console.error('Failed to load credentials', error);
+      }
+    };
+
+    loadCredentials();
+  }, []);
+
+  const handleLogin = async () => {
+    const userFound = users.find((user) => user.email === email && user.password === password);
+    if (userFound) {
+      if (isSelected) {
+        await AsyncStorage.setItem('savedEmail', email);
+        await AsyncStorage.setItem('savedPassword', password);
+      } else {
+        await AsyncStorage.removeItem('savedEmail');
+        await AsyncStorage.removeItem('savedPassword');
+      }
+      onLogin();
+    } else {
+      Alert.alert('Invalid email or password');
+    }
+  };
+
+  const handleRemember = () => {
+    setSelection(!isSelected);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.topvector}>
@@ -16,32 +73,39 @@ const Login = ({ navigation }) => {
       </View>
       <View style={styles.inputContainer}>
         <FontAwesome name="user" size={25} color="#9A9A9A" style={styles.inputIcon} />
-        <TextInput style={styles.textInput} placeholder='Email' />
+        <TextInput
+          style={styles.textInput}
+          placeholder='Email'
+          onChangeText={setEmail}
+          value={email}
+          required
+        />
       </View>
       <View style={styles.inputContainer}>
         <FontAwesome name="lock" size={26} color="#9A9A9A" style={styles.inputIcon} />
-        <TextInput style={styles.textInput} placeholder='Password' secureTextEntry />
+        <TextInput
+          style={styles.textInput}
+          placeholder='Password'
+          secureTextEntry
+          onChangeText={setPassword}
+          value={password}
+          required
+        />
       </View>
       <View style={styles.checkboxContainer}>
         <CheckBox
           value={isSelected}
-          onValueChange={setSelection}
+          onValueChange={handleRemember}
           style={styles.checkbox}
         />
         <Text style={styles.rememberMe}>Remember me</Text>
       </View>
-      <View>
       <TouchableOpacity
         style={styles.loginButton}
-        onPress={() => navigation.navigate("HOME")  
-        
-
-        }
+        onPress={handleLogin}
       >
-  
         <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>
-      </View>
     </View>
   );
 };
