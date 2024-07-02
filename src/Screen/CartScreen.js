@@ -2,45 +2,45 @@ import React, { useContext } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Header from '../component/Header';
-import CartCart from '../component/CartCart';
+import CartCart from '../component/CartCart'; 
 import { CartContext } from '../context/CartContext';
 
-const CartScreen = ({navigation}) => {
-    const { carts, totalPrice, deleteItemFromCart } = useContext(CartContext);
-    
+const CartScreen = ({ navigation }) => {
+    const { carts, totalPrice,totalshiping } = useContext(CartContext);
+    const Grand_Total = totalPrice+totalshiping;
     return (
         <LinearGradient colors={['#FDF0F3', '#FFFBFC']} style={styles.container}>
             <View style={styles.headerContainer}>
                 <Header isCart={true} />
             </View>
-            <FlatList 
-                data={carts} 
-                ListHeaderComponent={<></>}
-                renderItem={({ item }) => <CartCart item={item} deleteItemFromCart={deleteItemFromCart} />}
-                ListFooterComponent={
-                    <>
-                        <View style={styles.bottomContentContainer}>
-                            <View style={styles.flexRowContainer}>
-                                <Text style={styles.titleText}>Total:</Text>
-                                <Text style={styles.priceText}>${totalPrice}</Text>
-                            </View>
-                            <View style={styles.flexRowContainer}>
-                                <Text style={styles.titleText}>Shipping:</Text>
-                                <Text style={styles.priceText}>$0.0</Text>
-                            </View>
-                            <View style={styles.divider} />
-                            <View style={styles.flexRowContainer}>
-                                <Text style={styles.titleText}>Grand Total:</Text>
-                                <Text style={[styles.priceText, styles.grandPriceText]}>
-                                    ${totalPrice}
-                                </Text>
-                            </View>
-                        </View>
-                    </>
-                }
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 80 }}
-            />
+            <FlatList
+    data={carts}
+    ListHeaderComponent={<></>}
+    renderItem={({ item }) => <CartCart key={item.isid} item={item} />}
+    ListFooterComponent={
+        <View style={styles.bottomContentContainer}>
+            <View style={styles.flexRowContainer}>
+                <Text style={styles.titleText}>Total:</Text>
+                <Text style={styles.priceText}>${totalPrice.toFixed(0)}</Text>
+            </View>
+            <View style={styles.flexRowContainer}>
+                <Text style={styles.titleText}>Shipping:</Text>
+                <Text style={styles.priceText}>${totalshiping}</Text>
+            </View>
+            <View style={styles.divider} />
+            <View style={styles.flexRowContainer}>
+                <Text style={styles.titleText}>Grand Total:</Text>
+                <Text style={[styles.priceText, styles.grandPriceText]}>
+                    ${Grand_Total.toFixed(0)}
+                </Text>
+            </View>
+        </View>
+    }
+    keyExtractor={(item) => item.isid} 
+    showsVerticalScrollIndicator={false}
+    contentContainerStyle={{ paddingBottom: 80 }}
+/>
+
             <TouchableOpacity style={styles.checkoutContainer}
                 onPress={() => navigation.navigate("PAYMENT")}
             >

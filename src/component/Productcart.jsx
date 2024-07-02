@@ -13,7 +13,7 @@ const navagation =useNavigation();
         <Image source={{uri:item.image}} style={styles.coverImage}/>
         <View style={styles.content}>
             <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.price}>${item.price}</Text>
+            <Text style={styles.price}>${item.price.toFixed(0)}</Text>
         </View>
         <TouchableOpacity 
             style={styles.likecontainer}

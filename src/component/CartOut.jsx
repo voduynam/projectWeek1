@@ -4,34 +4,14 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { CartContext } from '../context/CartContext';
 
-const CartCart = ({ item }) => {
-    const { updateQuantity, deleteItemFromCart } = useContext(CartContext);
+const CartOut = ({ item }) => {
+    
     const [quantity, setQuantity] = useState(item.quantity);
 
-    // Update local quantity state if the item's quantity changes in the context
-    useEffect(() => {
-        setQuantity(item.quantity);
-    }, [item.quantity]);
-
-    // Increase quantity
-    const increaseQuantity = () => {
-        const newQuantity = quantity + 1;
-        setQuantity(newQuantity);
-        updateQuantity(item, newQuantity);
-    };
-
-    // Decrease quantity, minimum quantity is 1
-    const decreaseQuantity = () => {
-        if (quantity > 1) {
-            const newQuantity = quantity - 1;
-            setQuantity(newQuantity);
-            updateQuantity(item, newQuantity);
-        }
-    };
-
+   
     return (
         <View style={styles.container}>
-            <Image source={{ uri: item.image }} style={styles.coverImage} />
+           <Image source={{ uri: item.image }} style={styles.coverImage} />
             <View style={styles.cartContent}>
                 <Text style={styles.title}>{item.title}</Text>
                 <Text style={styles.price}>${(item.price * quantity).toFixed(0)}</Text>
@@ -42,17 +22,9 @@ const CartCart = ({ item }) => {
                     </View>
                 </View>
             </View>
-            <View style={styles.DeleteContainer}>
-                <TouchableOpacity onPress={decreaseQuantity} style={styles.iconButton}>
-                    <Ionicons name={'remove-outline'} size={23} color={'black'} />
-                </TouchableOpacity>
-                <Text style={styles.quantityText}>{quantity}</Text>
-                <TouchableOpacity onPress={increaseQuantity} style={styles.iconButton}>
-                    <Ionicons name={'add'} size={23} color={'black'} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => deleteItemFromCart(item)} style={styles.iconButton}>
-                    <AntDesign name={'delete'} color={'black'} size={20} />
-                </TouchableOpacity>
+             <View style={styles.DeleteContainer}>
+            <Text style={styles.quantityText}>{quantity}</Text>
+                
             </View>
         </View>
     );
@@ -97,25 +69,23 @@ const styles = StyleSheet.create({
         height: 32,
         width: 32,
         borderRadius: 16,
-        justifyContent: 'center',
-        alignItems: 'center',
+        alignItems:"center",
+        justifyContent:"center",
         marginLeft: 20,
     },
     textSize: {
         fontSize: 18,
         fontWeight: '500',
     },
-    DeleteContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    iconButton: {
-        padding: 5,
-    },
+
     quantityText: {
         fontSize: 18,
         marginHorizontal: 10,
+        color: "black",
+        fontWeight:"600",
+ 
     },
+
 });
 
-export default CartCart;
+export default CartOut;

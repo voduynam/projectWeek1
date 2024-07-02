@@ -15,6 +15,7 @@ import Payment from './src/Screen/Payment';
 import Directpay from './src/Screen/Directpay';
 import Onlinepay from './src/Screen/Onlinepay';
 
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -25,6 +26,7 @@ const MyHomeStack = () => (
     <Stack.Screen name="PAYMENT" component={Payment} />
     <Stack.Screen name="DIRECTPAY" component={Directpay} />
     <Stack.Screen name="ONLINEPAY" component={Onlinepay} />
+   
   </Stack.Navigator>
 );
 

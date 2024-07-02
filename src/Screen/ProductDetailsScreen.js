@@ -18,6 +18,7 @@ const colorsArray = [
 
 
 const ProductDetailsScreen = () => {
+    
   const route=useRoute();
   const item= route.params.item;
   // console.log(route.params.item);
@@ -27,20 +28,18 @@ const ProductDetailsScreen = () => {
 
     const {addToCart}=useContext(CartContext)
 
-    const handleAddToCart =(item)=>{
-        if(!selectedColor || !selectedSize){
-            Alert.alert("please choose your color and size");
-            return;           
-        }
-        
-        
+    const handleAddToCart = (carts) => {
 
-        item.size=selectedSize;
-        item.color=selectedColor;
-        addToCart(item);
+        const newItem = {
+            ...carts,
+            size: selectedSize,
+            color: selectedColor,
+        };
+    
+        addToCart(newItem);
         navigation.navigate("CartScreen");
-    }
-
+    };
+                                
     return (
         <LinearGradient colors={['#FDF0F3', '#FFFBFC']} style={styles.container}>
             <View style={styles.headerContainer}>
@@ -49,7 +48,7 @@ const ProductDetailsScreen = () => {
             <Image source={{ uri: item.image }} style={styles.coverImage} />
             <View style={styles.contentContainer}>
                 <Text style={styles.title}>{item.title}</Text>
-                <Text style={[styles.title, styles.price]}>{item.price}</Text>
+                <Text style={[styles.title, styles.price]}>${item.price.toFixed(0)}</Text>
             </View>
             <View>
                 <Text style={[styles.title, styles.sizeText]}>Size</Text>
